@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speakers - DevFest Lomé 2024</title>
+    <style>
+        /* Global Styles */
+        body {
+            margin: 0;
+            background: black;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+        }
+
+        #video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100vh;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .photo-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: transform 1s ease, opacity 1s ease;
+        }
+
+        .photo-container.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .photo {
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 40px #00ff00;
+        }
+
+        .name {
+            margin-top: 20px;
+            font-size: 3.5rem;
+            font-weight: bolder;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+        }
+
+        @keyframes circularMotion {
+            0% {
+                transform: rotate(0deg) translateX(450px) rotate(0deg);  /* Augmenter la distance pour l'espacement */
+            }
+            100% {
+                transform: rotate(360deg) translateX(450px) rotate(-360deg);  /* Augmenter la distance pour l'espacement */
+            }
+        }
+
+        .circle-animation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: circularMotion 10s linear infinite;
+        }
+
+        .circle-photo {
+            position: absolute;
+            width: 150px; /* Réduire la taille des images */
+            height: 150px; /* Réduire la taille des images */
+            border-radius: 50%; /* Garder les images rondes */
+            object-fit: cover;
+            box-shadow: 0 0 30px #00ff00;
+            transform-origin: center center; /* Définir le point de rotation */
+        }
+    </style>
+</head>
+<body>
+    <!-- Conteneur vidéo d'arrière-plan -->
+    <div id="video-container">
+        <video autoplay loop muted>
+            <source src="spk.mp4" type="video/mp4">
+            Votre navigateur ne supporte pas la vidéo.
+        </video>
+    </div>
+
+    <!-- Contenu principal -->
+    <div id="content">
+        <div id="photo-container" class="photo-container">
+            <img id="photo" class="photo" src="" alt="">
+            <div id="name" class="name"></div>
+        </div>
+        <div id="circle-container" class="circle-animation" style="display: none;"></div>
+    </div>
+
+    <!-- Script -->
+    <script>
+        const photos = [
+            'img/speaker1.jpg',
+            'img/speaker2.jpg',
+            'img/speaker3.jpg',
+            'img/speaker4.jpg',
+            'img/speaker5.jpg',
+            'img/speaker6.jpg',
+            'img/speaker7.jpg',
+            'img/speaker8.jpg',
+            // 'img/speaker9.jpg',
+            // 'img/speaker10.jpg',
+            // 'img/speaker11.jpg',
+            // 'img/speaker12.jpg',
+            // 'img/speaker13.jpg',
+            // 'img/speaker14.jpg',
+            // 'img/speaker15.jpg',
+            // 'img/speaker16.jpg',
+            // 'img/speaker17.jpg',
+            // 'img/speaker18.jpg',
+            // 'img/speaker19.jpg',
+            // 'img/speaker20.jpg'
+        ];
+
+        const names = [
+            'Speaker 1', 'Speaker 2', 'Speaker 3', 'Speaker 4', 'Speaker 5',
+            'Speaker 6', 'Speaker 7', 'Speaker 8'
+            // , 'Speaker 9', 'Speaker 10',
+            // 'Speaker 11', 'Speaker 12', 'Speaker 13', 'Speaker 14', 'Speaker 15',
+            // 'Speaker 16', 'Speaker 17', 'Speaker 18', 'Speaker 19', 'Speaker 20'
+        ];
+
+        const photoContainer = document.getElementById('photo-container');
+        const photoElement = document.getElementById('photo');
+        const nameElement = document.getElementById('name');
+        const circleContainer = document.getElementById('circle-container');
+
+        let index = 0;
+
+        function showPhoto() {
+            photoElement.src = photos[index];
+            nameElement.textContent = names[index];
+            photoContainer.classList.add('active');
+
+            setTimeout(() => {
+                photoContainer.classList.remove('active');
+                index++;
+
+                if (index >= photos.length) {
+                    index = 0;
+                    showCircleAnimation();
+                } else {
+                    setTimeout(showPhoto, 800);
+                }
+            }, 2500);
+        }
+
+        function showCircleAnimation() {
+            circleContainer.innerHTML = '';
+            circleContainer.style.display = 'flex';
+
+            photos.forEach((photo, i) => {
+                const img = document.createElement('img');
+                img.src = photo;
+                img.classList.add('circle-photo');
+                // Espacement entre les images ajusté ici
+                img.style.transform = `rotate(${(i / photos.length) * 360}deg) translateX(450px) rotate(-${(i / photos.length) * 360}deg)`;  // Augmenter translateX pour plus d'espacement
+                circleContainer.appendChild(img);
+            });
+
+            setTimeout(() => {
+                circleContainer.style.display = 'none';
+                showPhoto();
+            }, 15000);
+        }
+
+        window.onload = function() {
+            setTimeout(function() {
+                const videoElement = document.getElementById('video');
+                videoElement.muted = false;  // Désactive le muet après 1 seconde
+            }, 1000); // 1000ms = 1 seconde
+        };
+
+        showPhoto();
+    </script>
+</body>
+</html>
